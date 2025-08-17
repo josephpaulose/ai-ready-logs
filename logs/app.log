@@ -49,3 +49,21 @@
 {"timestamp":"2025-08-17T15:18:47.911Z","level":"debug","message":"Cache miss","event":"","actor":"","object":"user:123","metadata":{"ttl":"60s"}}
 {"timestamp":"2025-08-17T15:18:47.911Z","level":"trace","message":"Full request payload","event":"","actor":"","object":"","metadata":{"payload":{"user":"joe","action":"login"}}}
 {"timestamp":"2025-08-17T15:18:47.911Z","level":"fatal","message":"Critical system failure","event":"","actor":"","object":"server-1","metadata":{"reason":"out of memory"}}
+{"timestamp":"2025-08-17T20:36:28.209Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:36:28.216Z","level":"warn","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:36:28.216Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:36:28.216Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:36:28.216Z","level":"trace","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:36:28.216Z","level":"fatal","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:40:24.877Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:40:24.881Z","level":"warn","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:40:24.881Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:40:24.881Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:40:24.881Z","level":"trace","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:40:24.881Z","level":"fatal","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:42:13.748Z","level":"info","message":"User login attempt","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:42:13.751Z","level":"warn","message":"API rate limit approaching","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:42:13.751Z","level":"error","message":"Database connection failed","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:42:13.751Z","level":"debug","message":"Cache miss","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:42:13.751Z","level":"trace","message":"Full request payload","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T20:42:13.751Z","level":"fatal","message":"Critical system failure","event":"","actor":"","object":"","metadata":{}}

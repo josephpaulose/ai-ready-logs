@@ -2,7 +2,8 @@
   "name": "ai-ready-logs",
   "version": "1.0.0",
   "description": "AI-optimized logging library: structured, semantic logs designed for humans, machines, and LLMs.",
-  "main": "./cjs-wrapper.js",
+  "main": "cjs-wrapper.js",
+  "module":"index.js",
   "type": "module",
   "exports": {
     "import": "./index.js",

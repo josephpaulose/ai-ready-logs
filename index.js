@@ -69,10 +69,17 @@ export function createLogger(options = {}) {
     });
   }
 
-  const logger = {};
+const logger = {};
   allLevels.forEach((lvl) => {
-    logger[lvl] = (obj) => log(lvl, obj);
-  });
+  logger[lvl] = (objOrMessage) => {
+    if (typeof objOrMessage === "string") {
+      log(lvl, { message: objOrMessage });
+    } else {
+      log(lvl, objOrMessage);
+    }
+  };
+});
+
 
   return logger;
 }
