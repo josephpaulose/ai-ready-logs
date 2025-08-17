@@ -1,0 +1,34 @@
+{
+  "name": "ai-ready-logs",
+  "version": "1.0.0",
+  "description": "AI-optimized logging library: structured, semantic logs designed for humans, machines, and LLMs.",
+  "main": "./cjs-wrapper.js",
+  "type": "module",
+  "exports": {
+    "import": "./index.js",
+    "require": "./cjs-wrapper.js"
+  },
+  "scripts": {
+    "start": "node examples/basic.js",
+    "test": "node examples/basic.js"
+  },
+  "keywords": [
+    "logging",
+    "ai",
+    "structured-logs",
+    "json-logs",
+    "llm",
+    "devops",
+    "observability"
+  ],
+  "author": "Joseph Paulose",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/josephpaulose/ai-ready-logs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/josephpaulose/ai-ready-logs/issues"
+  },
+  "homepage": "https://github.com/josephpaulose/ai-ready-logs#readme"
+}

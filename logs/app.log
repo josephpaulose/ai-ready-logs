@@ -1,0 +1,51 @@
+{"timestamp":"2025-08-17T15:11:24.252Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:24.253Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:24.253Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:55.903Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:55.903Z","level":"warn","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:55.904Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:55.904Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:55.904Z","level":"trace","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:11:55.904Z","level":"fatal","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:12:29.503Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:12:29.504Z","level":"warn","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:12:29.504Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:12:29.504Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:12:29.504Z","level":"trace","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:12:29.504Z","level":"fatal","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:13:41.283Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:13:41.284Z","level":"warn","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:13:41.284Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:13:41.284Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:13:41.284Z","level":"trace","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:13:41.284Z","level":"fatal","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:15:43.343Z","level":"info","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:15:43.346Z","level":"warn","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:15:43.346Z","level":"error","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:15:43.346Z","level":"debug","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:15:43.347Z","level":"trace","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:15:43.347Z","level":"fatal","message":"","event":"","actor":"","object":"","metadata":{}}
+{"timestamp":"2025-08-17T15:18:18.791Z","level":"info","message":"User login attempt","event":"","actor":"user:joe","object":"","metadata":{"ip":"192.168.1.1","reason":"invalid password"}}
+{"timestamp":"2025-08-17T15:18:18.795Z","level":"warn","message":"API rate limit approaching","event":"","actor":"service:auth","object":"","metadata":{"endpoint":"/login","limit":100}}
+{"timestamp":"2025-08-17T15:18:18.795Z","level":"error","message":"Database connection failed","event":"","actor":"","object":"db.example.com","metadata":{"retries":3}}
+{"timestamp":"2025-08-17T15:18:18.795Z","level":"debug","message":"Cache miss","event":"","actor":"","object":"user:123","metadata":{"ttl":"60s"}}
+{"timestamp":"2025-08-17T15:18:18.795Z","level":"trace","message":"Full request payload","event":"","actor":"","object":"","metadata":{"payload":{"user":"joe","action":"login"}}}
+{"timestamp":"2025-08-17T15:18:18.795Z","level":"fatal","message":"Critical system failure","event":"","actor":"","object":"server-1","metadata":{"reason":"out of memory"}}
+{"timestamp":"2025-08-17T15:18:26.316Z","level":"info","message":"User login attempt","event":"","actor":"user:joe","object":"","metadata":{"ip":"192.168.1.1","reason":"invalid password"}}
+{"timestamp":"2025-08-17T15:18:26.320Z","level":"warn","message":"API rate limit approaching","event":"","actor":"service:auth","object":"","metadata":{"endpoint":"/login","limit":100}}
+{"timestamp":"2025-08-17T15:18:26.320Z","level":"error","message":"Database connection failed","event":"","actor":"","object":"db.example.com","metadata":{"retries":3}}
+{"timestamp":"2025-08-17T15:18:26.320Z","level":"debug","message":"Cache miss","event":"","actor":"","object":"user:123","metadata":{"ttl":"60s"}}
+{"timestamp":"2025-08-17T15:18:26.320Z","level":"trace","message":"Full request payload","event":"","actor":"","object":"","metadata":{"payload":{"user":"joe","action":"login"}}}
+{"timestamp":"2025-08-17T15:18:26.320Z","level":"fatal","message":"Critical system failure","event":"","actor":"","object":"server-1","metadata":{"reason":"out of memory"}}
+{"timestamp":"2025-08-17T15:18:43.171Z","level":"info","message":"User login attempt","event":"","actor":"user:joe","object":"","metadata":{"ip":"192.168.1.1","reason":"invalid password"}}
+{"timestamp":"2025-08-17T15:18:43.173Z","level":"warn","message":"API rate limit approaching","event":"","actor":"service:auth","object":"","metadata":{"endpoint":"/login","limit":100}}
+{"timestamp":"2025-08-17T15:18:43.173Z","level":"error","message":"Database connection failed","event":"","actor":"","object":"db.example.com","metadata":{"retries":3}}
+{"timestamp":"2025-08-17T15:18:43.173Z","level":"debug","message":"Cache miss","event":"","actor":"","object":"user:123","metadata":{"ttl":"60s"}}
+{"timestamp":"2025-08-17T15:18:43.173Z","level":"trace","message":"Full request payload","event":"","actor":"","object":"","metadata":{"payload":{"user":"joe","action":"login"}}}
+{"timestamp":"2025-08-17T15:18:43.173Z","level":"fatal","message":"Critical system failure","event":"","actor":"","object":"server-1","metadata":{"reason":"out of memory"}}
+{"timestamp":"2025-08-17T15:18:47.908Z","level":"info","message":"User login attempt","event":"","actor":"user:joe","object":"","metadata":{"ip":"192.168.1.1","reason":"invalid password"}}
+{"timestamp":"2025-08-17T15:18:47.910Z","level":"warn","message":"API rate limit approaching","event":"","actor":"service:auth","object":"","metadata":{"endpoint":"/login","limit":100}}
+{"timestamp":"2025-08-17T15:18:47.911Z","level":"error","message":"Database connection failed","event":"","actor":"","object":"db.example.com","metadata":{"retries":3}}
+{"timestamp":"2025-08-17T15:18:47.911Z","level":"debug","message":"Cache miss","event":"","actor":"","object":"user:123","metadata":{"ttl":"60s"}}
+{"timestamp":"2025-08-17T15:18:47.911Z","level":"trace","message":"Full request payload","event":"","actor":"","object":"","metadata":{"payload":{"user":"joe","action":"login"}}}
+{"timestamp":"2025-08-17T15:18:47.911Z","level":"fatal","message":"Critical system failure","event":"","actor":"","object":"server-1","metadata":{"reason":"out of memory"}}
