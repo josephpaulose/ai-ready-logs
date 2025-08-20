@@ -1,5 +1,6 @@
 import { createFileTransport } from "./lib/file-transport.js";
 import { getTimestamp, getLevels } from "./lib/utils.js";
+import { defaultScrubber } from "./lib/scrubber.js";
 
 // --- Sanitizer ---
 function sanitize(input) {
@@ -7,16 +8,16 @@ function sanitize(input) {
   if (typeof input !== "string") return input;
 
   return input
-    .replace(/[\r\n]+/g, " ") // prevent multi-line injection
-    .replace(/\x1b\[[0-9;]*m/g, "") // strip ANSI codes
-    .replace(/[^\x20-\x7E]+/g, ""); // strip non-printable chars
+    .replace(/[\r\n]+/g, " ")          // prevent multi-line injection
+    .replace(/\x1b\[[0-9;]*m/g, "")    // strip ANSI codes
+    .replace(/[^\x20-\x7E]+/g, "");    // strip non-printable chars
 }
 
 // --- JSON formatter ---
-function formatJSON({ level, message, event, actor, object, metadata }) {
+function formatJSON({ level, message, event, actor, object, metadata }, scrubber) {
   let safeMeta = {};
   try {
-    safeMeta = metadata ? JSON.parse(sanitize(JSON.stringify(metadata))) : {};
+    safeMeta = metadata ? scrubber(metadata) : {};
   } catch {
     safeMeta = { invalid_metadata: true };
   }
@@ -39,6 +40,8 @@ export function prettyConsole(level, logObj) {
     warn: "\x1b[33m",
     error: "\x1b[31m",
     debug: "\x1b[35m",
+    trace: "\x1b[90m",
+    fatal: "\x1b[41m",
   };
   const reset = "\x1b[0m";
   const color = colors[level] || "\x1b[37m";
@@ -48,11 +51,16 @@ export function prettyConsole(level, logObj) {
 
 // --- Main Logger Factory ---
 export function createLogger(options = {}) {
-  const { transports = [prettyConsole, createFileTransport("logs/server.log")], levels = [] } = options;
+  const {
+    transports = [prettyConsole, createFileTransport("logs/server.log")],
+    levels = ["info", "warn", "error", "debug", "trace", "fatal"],
+    scrubber = defaultScrubber,       // allow custom scrubber
+  } = options;
+
   const allLevels = getLevels(levels);
 
   function log(level, { message = "", event = "", actor = "", object = "", metadata = {} } = {}) {
-    const logObj = formatJSON({ level, message, event, actor, object, metadata });
+    const logObj = formatJSON({ level, message, event, actor, object, metadata }, scrubber);
 
     transports.forEach((t) => {
       try {
@@ -69,17 +77,18 @@ export function createLogger(options = {}) {
     });
   }
 
-const logger = {};
+  const logger = {};
   allLevels.forEach((lvl) => {
-  logger[lvl] = (objOrMessage) => {
-    if (typeof objOrMessage === "string") {
-      log(lvl, { message: objOrMessage });
-    } else {
-      log(lvl, objOrMessage);
-    }
-  };
-});
-
+    logger[lvl] = (messageOrObj, meta = {}) => {
+      if (typeof messageOrObj === "string") {
+        const { event = "", actor = "", object = "", ...rest } = meta;
+        log(lvl, { message: messageOrObj, event, actor, object, metadata: rest });
+      } else if (typeof messageOrObj === "object" && messageOrObj !== null) {
+        const { message = "", event = "", actor = "", object = "", ...rest } = messageOrObj;
+        log(lvl, { message, event, actor, object, metadata: rest });
+      }
+    };
+  });
 
   return logger;
 }
