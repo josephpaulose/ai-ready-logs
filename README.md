@@ -194,26 +194,4 @@ MIT
 ***
 
 **For working examples, see `examples/` folder in the repo. PRs welcome!**
-<span style="display:none">[^1][^10][^2][^3][^4][^5][^6][^7][^8][^9]</span>
 
-<div style="text-align: center">⁂</div>
-
-[^1]: file-transport.js
-
-[^2]: scrubber.js
-
-[^3]: utils.js
-
-[^4]: index.js
-
-[^5]: README.md
-
-[^6]: basic.js
-
-[^7]: example.js
-
-[^8]: simple.js
-
-[^9]: cjs-wrapper.js
-
-[^10]: package.json
