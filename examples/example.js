@@ -6,7 +6,7 @@ import { createFileTransport } from "../lib/file-transport.js";
 const logger = createLogger({
   transports: [
     prettyConsole,
-    createFileTransport("app.log"), // <-- writes to ./examples/app.log
+    createFileTransport("./logs/app.log"), // <-- writes to ./examples/app.log
   ],
 });
 

@@ -1,14 +1,9 @@
 // cjs-wrapper.js
-const path = require("path");
 const { createRequire } = require("module");
-const requireESM = createRequire(import.meta.url);
+const requireESM = createRequire(__filename);
 
-// Import ESM index.js
-const esmLogger = requireESM(path.join(__dirname, "index.js"));
+// Import your ESM entrypoint
+const esmExports = requireESM("./index.js");
 
-// Export as CommonJS
-module.exports = {
-  createLogger: esmLogger.createLogger,
-  prettyConsole: esmLogger.prettyConsole,
-  createFileTransport: esmLogger.createFileTransport,
-};
+// Export them in CommonJS style
+module.exports = esmExports;

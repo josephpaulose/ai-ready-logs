@@ -1,6 +1,6 @@
-import { createFileTransport } from "./lib/file-transport.js";
-import { getTimestamp, getLevels } from "./lib/utils.js";
-import { defaultScrubber } from "./lib/scrubber.js";
+import { createFileTransport, createRotatingFileTransport } from "./lib/file-transport.js";
+import { getTimestamp, getLevels, defaultLevels } from "./lib/utils.js";
+import { defaultScrubber, createScrubber } from "./lib/scrubber.js";
 
 // --- Sanitizer ---
 function sanitize(input) {
@@ -36,51 +36,96 @@ function formatJSON({ level, message, event, actor, object, metadata }, scrubber
 // --- Pretty console transport ---
 export function prettyConsole(level, logObj) {
   const colors = {
-    info: "\x1b[36m",
-    warn: "\x1b[33m",
-    error: "\x1b[31m",
-    debug: "\x1b[35m",
-    trace: "\x1b[90m",
-    fatal: "\x1b[41m",
+    info: "\x1b[36m",   // cyan
+    warn: "\x1b[33m",   // yellow
+    error: "\x1b[31m",  // red
+    debug: "\x1b[35m",  // magenta
+    trace: "\x1b[90m",  // gray
+    fatal: "\x1b[41m",  // red background
   };
   const reset = "\x1b[0m";
   const color = colors[level] || "\x1b[37m";
 
-  console.log(`${color}[${logObj.timestamp}] ${level.toUpperCase()}: ${logObj.message}${reset}`);
+  console.log(
+    `${color}[${logObj.timestamp}] ${level.toUpperCase()}: ${logObj.message}${reset}`
+  );
+
+  if (logObj.event || logObj.actor || logObj.object) {
+    console.log(
+      `   event: ${logObj.event || "-"} | actor: ${logObj.actor || "-"} | object: ${logObj.object || "-"}`
+    );
+  }
+
+  if (logObj.metadata && Object.keys(logObj.metadata).length > 0) {
+    console.log("   metadata:", JSON.stringify(logObj.metadata, null, 2));
+  }
 }
 
-// --- Main Logger Factory ---
+// --- Logger Factory with per-transport levels ---
 export function createLogger(options = {}) {
   const {
-    transports = [prettyConsole, createFileTransport("logs/server.log")],
-    levels = ["info", "warn", "error", "debug", "trace", "fatal"],
-    scrubber = defaultScrubber,       // allow custom scrubber
+    transports = [
+      { transport: prettyConsole, level: "debug" },  // console shows debug+
+      { transport: createRotatingFileTransport("logs/app.log", { maxSize: 100*1024, maxFiles: 5, compress: true }), level: "info" }, // file shows info+
+    ],
+    levels = defaultLevels,
+    scrubber = defaultScrubber,
+    baseMeta = {},
   } = options;
 
   const allLevels = getLevels(levels);
 
-  function log(level, { message = "", event = "", actor = "", object = "", metadata = {} } = {}) {
-    const logObj = formatJSON({ level, message, event, actor, object, metadata }, scrubber);
+  async function log(level, { message = "", event = "", actor = "", object = "", metadata = {} } = {}) {
+    let msg = message;
+    let meta = { ...metadata };
+    if (message instanceof Error) {
+      msg = message.message;
+      meta.stack = message.stack;
+    }
 
-    transports.forEach((t) => {
+    const logObj = formatJSON(
+      { level, message: msg, event, actor, object, metadata: { ...baseMeta, ...meta } },
+      scrubber
+    );
+
+  await Promise.all(
+    transports.map(async (entry) => {
       try {
-        if (typeof t === "function") {
-          t(level, logObj);
-        } else if (t && typeof t.write === "function") {
-          t.write(JSON.stringify(logObj));
+        let transport, minLevel;
+
+        // Support both `{ transport, level }` and raw function/object
+        if (typeof entry === "function" || (entry && typeof entry.write === "function")) {
+          transport = entry;
+          minLevel = "info"; // default
+        } else if (entry && typeof entry === "object" && entry.transport) {
+          transport = entry.transport;
+         minLevel = entry.level || "info";
         } else {
-          console.error("Invalid transport:", t);
+          console.error("Invalid transport entry:", entry);
+          return;
         }
+
+        // Skip if below minLevel
+       if (defaultLevels.indexOf(level) < defaultLevels.indexOf(minLevel)) return;
+
+        if (typeof transport === "function") {
+          await transport(level, logObj);
+       } else if (transport && typeof transport.write === "function") {
+         await transport.write(JSON.stringify(logObj) + "\n");
+        } else {
+         console.error("Invalid transport handler:", transport);
+       }
       } catch (err) {
         console.error("Transport error:", err);
       }
-    });
-  }
+    })
+  );
+}
 
   const logger = {};
   allLevels.forEach((lvl) => {
     logger[lvl] = (messageOrObj, meta = {}) => {
-      if (typeof messageOrObj === "string") {
+      if (typeof messageOrObj === "string" || messageOrObj instanceof Error) {
         const { event = "", actor = "", object = "", ...rest } = meta;
         log(lvl, { message: messageOrObj, event, actor, object, metadata: rest });
       } else if (typeof messageOrObj === "object" && messageOrObj !== null) {
@@ -90,5 +135,21 @@ export function createLogger(options = {}) {
     };
   });
 
+  // child logger with inherited meta
+  logger.child = (childMeta = {}) => {
+    return createLogger({
+      ...options,
+      baseMeta: { ...baseMeta, ...childMeta },
+    });
+  };
+
   return logger;
 }
+
+// --- Public Exports ---
+export {
+  createFileTransport,
+  createRotatingFileTransport,
+  defaultScrubber,
+  createScrubber,
+};

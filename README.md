@@ -1,170 +1,219 @@
 
+***
+
 # ai-ready-logs
 
-🚀 AI-optimized logging library for Node.js.  
-Structured, semantic logs designed for **humans, machines, and LLMs**.  
+**AI-optimized, structured logging for Node.js**
+Semantic logs for humans, machines, and LLMs.
 
----
+***
 
-## ✨ Features
-- 📦 **Structured JSON logs** (default output for files)
-- 🎨 **Pretty human-readable logs** in console
-- 🤖 **AI-ready schema**: actor, object, metadata, event
-- 🛡 **Sanitized logs**: prevents log forging, ANSI injection, control chars
-- ⚡ Lightweight, **no external npm dependencies** (Node.js built-ins only)
-- 📝 **Custom transports**: console, files, or your own transport
+## Features
 
----
+- **Structured JSON logs** for pipelines, files, and analytics.
+- **Colored console output** for easy local development.
+- **AI-ready schema** with fields: `timestamp`, `level`, `message`, `event`, `actor`, `object`, `metadata`.
+- **Sensitive data redaction** for secrets, tokens, keys, and more.
+- **Sanitization** against log forging, newlines, and ANSI/control codes.
+- **File log rotation \& gzip compression** (size or daily).
+- **Custom log levels \& multiple transports**.
+- **Zero external dependencies**—works anywhere Node.js runs.
+- **Child loggers** for inherited context/meta.
 
-## 📦 Installation
+***
+
+## Installation
 
 ```bash
 npm install ai-ready-logs
 ```
 
----
+Requires Node.js v18+.
 
-## 🧰 Usage
+***
 
-### Import
+## Quick Start
+
+```js
+import { createLogger, prettyConsole } from "ai-ready-logs";
+import { createFileTransport } from "ai-ready-logs/lib/file-transport.js";
+
+// File rotation (size-based, daily also supported)
+const fileTransport = createFileTransport("./logs/app.log", {
+  rotation: "size",        // or "daily"
+  maxSize: 2 * 1024 * 1024, // 2MB per file
+  maxFiles: 10,            // keep last 10 files
+  compress: true           // gzip rotated files
+});
+
+const logger = createLogger({
+  transports: [
+    { transport: prettyConsole, level: "debug" }, // colored console: debug and up
+    { transport: fileTransport,    level: "info" } // files: info and up
+  ]
+});
+
+// Logging
+logger.info("User login", { actor: "user:joe", ip: "192.168.1.1" });
+logger.debug("Cache miss", { object: "user:123", ttl: "60s" });
+logger.warn({ message: "Disk space low", metadata: { free: "500MB" } });
+logger.error("Database error", { object: "db:main", retries: 2 });
+```
+
+
+***
+
+## API \& Usage
+
+### Creating a Logger
 
 ```js
 import { createLogger } from "ai-ready-logs";
-import { createFileTransport } from "ai-ready-logs/lib/file-transport.js";
-```
-
-### Create a file transport
-
-```js
-const fileTransport = createFileTransport("./logs/app.log");
-```
-
-### Create a logger with transports
-
-```js
-const logger = createLogger({
-  transports: [fileTransport],  // add prettyConsole separately if desired
-});
-```
-
-### Log examples
-
-> Always pass a single object containing at least `message`. Optional: `actor`, `object`, `metadata`, `event`.
-
-```js
-logger.info({
-  message: "User login attempt",
-  actor: "user:joe",
-  metadata: {
-    ip: "192.168.1.1",
-    reason: "invalid password"
-  }
-});
-
-logger.warn({
-  message: "API rate limit approaching",
-  actor: "service:auth",
-  metadata: {
-    endpoint: "/login",
-    limit: 100
-  }
-});
-
-logger.error({
-  message: "Database connection failed",
-  object: "db.example.com",
-  metadata: { retries: 3 }
-});
-
-logger.debug({
-  message: "Cache miss",
-  object: "user:123",
-  metadata: { ttl: "60s" }
-});
-
-logger.trace({
-  message: "Full request payload",
-  metadata: { payload: { user: "joe", action: "login" } }
-});
-
-logger.fatal({
-  message: "Critical system failure",
-  object: "server-1",
-  metadata: { reason: "out of memory" }
-});
-```
-
----
-
-## 🌈 Pretty Console Output
-
-To enable colored, human-readable logs in console, import `prettyConsole`:
-
-```js
-import { prettyConsole } from "ai-ready-logs";
 
 const logger = createLogger({
-  transports: [prettyConsole, fileTransport],
+  transports: [
+    // Add one or more transports, each can have a minimum log level.
+  ],
+  levels: ["trace", "debug", "info", "warn", "error", "fatal"], // optional, add custom
+  scrubber: undefined,   // optional, for custom sensitive data redaction
+  baseMeta: undefined    // optional, add fields inherited by all logs
 });
 ```
 
----
 
-## 🔧 File Transport
+### Transports
+
+- **prettyConsole** – Human-friendly colors, dev only.
+- **createFileTransport(path, options)** – Writes JSON logs to the given file (see rotation below).
+- **Your custom function/stream** – Any function/stream with `.write()` or `(level,obj)` signature.
+
+
+### Log Methods
 
 ```js
-import { createFileTransport } from "ai-ready-logs/lib/file-transport.js";
-
-const fileTransport = createFileTransport("./logs/app.log");
+logger.info("Simple message");
+logger.warn({ message: "Warn!", event: "SOMEEVENT", metadata: { reason: "why" } });
+logger.error("Error with object", { object: "db.example.com", retries: 2 });
+logger.debug("Full meta", { actor: "system", event: "DEBUG", details: {...} });
 ```
 
-- Writes logs as JSON lines to the specified file.
-- Automatically creates the `logs/` directory if missing.
+Log fields:
 
----
+- `message`: Main message (string)
+- `event`: Short code or event tag
+- `actor`: User, system, source, etc.
+- `object`: Target or entity affected
+- `metadata`: Any structured data (scrubbed for secrets/tokens)
 
-## 🛡 Sanitization
 
-- Removes newline characters to prevent log forging
-- Strips ANSI escape sequences
-- Removes non-printable control characters
+### Child Loggers (Context Inheritance)
 
----
+```js
+const svcLogger = logger.child({ service: "payments" });
+svcLogger.info("Started payments engine");
+```
 
-## 🧩 Custom Log Levels
 
-Default levels: `trace`, `debug`, `info`, `warn`, `error`, `fatal`
+### File Transport Options
 
-You can add custom levels:
+```js
+const fileTransport = createFileTransport("./logs/app.log", {
+  rotation: "daily",     // or "size"
+  maxSize: 5 * 1024 * 1024, // size in bytes for "size"
+  maxFiles: 7,           // max rotated files kept
+  compress: true         // gzip rotated logs
+});
+```
+
+
+***
+
+## Sensitive Data Redaction
+
+All `metadata` is recursively scanned for secrets and redactable values:
+
+- Keys: `password`, `token`, `secret`, `api_key`, `auth`, etc.
+- Patterns: AWS keys, JWTs, credit cards
+
+Custom keys/patterns:
+
+```js
+import { createScrubber } from "ai-ready-logs/lib/scrubber.js";
+const myScrubber = createScrubber(["private_key"], [/mysecret/i]);
+const logger = createLogger({ scrubber: myScrubber });
+```
+
+
+***
+
+## Custom Log Levels
 
 ```js
 import { getLevels } from "ai-ready-logs/lib/utils.js";
-
 const customLevels = getLevels(["notice", "critical"]);
 ```
 
----
 
-## 📂 Folder Structure
+***
+
+## Example Project Structure
 
 ```
 ai-ready-logs/
-├─ index.js
-├─ lib/
-│  ├─ file-transport.js
-│  └─ utils.js
-├─ examples/
-│  └─ basic.js
-├─ logs/         # created automatically
-└─ package.json
+├── index.js
+├── lib/
+│   ├── file-transport.js
+│   ├── utils.js
+│   └── scrubber.js
+├── examples/
+│   ├── basic.js
+│   ├── simple.js
+│   └── logger-example.js
+├── logs/         # auto-created
+├── package.json
+└── cjs-wrapper.js
 ```
 
----
 
-## 📝 Notes
+***
 
-- Node.js >= 18 recommended
-- Fully ESM compatible
-- Supports multiple transports simultaneously
-- Logs are AI/ELK-ready JSON by default
-- Console logs are colorful and human-friendly if `prettyConsole` transport is used
+## Notes \& Best Practices
+
+- Pass strings for normal logs, or an object for structured logs.
+- Always sanitize/scrub logs before sending to untrusted sinks or analytics.
+- Multiple transports can run in parallel; file/console/log management is flexible.
+- Fully ESM, but CJS-interop supported via `cjs-wrapper.js`.
+- Designed for ELK/AI/analytics pipelines and modern Node.js environments.
+
+***
+
+## License
+
+MIT
+
+***
+
+**For working examples, see `examples/` folder in the repo. PRs welcome!**
+<span style="display:none">[^1][^10][^2][^3][^4][^5][^6][^7][^8][^9]</span>
+
+<div style="text-align: center">⁂</div>
+
+[^1]: file-transport.js
+
+[^2]: scrubber.js
+
+[^3]: utils.js
+
+[^4]: index.js
+
+[^5]: README.md
+
+[^6]: basic.js
+
+[^7]: example.js
+
+[^8]: simple.js
+
+[^9]: cjs-wrapper.js
+
+[^10]: package.json
