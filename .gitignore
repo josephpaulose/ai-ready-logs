@@ -4,4 +4,6 @@ dist
 npm-debug.log*
 .dcignore
 .npmignore
-logs/app.log
+logs/*
+examples/*
+examples/logs/test.log
